@@ -8,9 +8,13 @@ export function App() {
 
 function Card() {
   return (
-    <div>
-      <h2>Card Component</h2>
-      <p>This is a card component.</p>
+    <div className="p-2">
+      <div className="border border-black rounded">
+        <div className="p-2">
+          <h2>Card Component</h2>
+          <p>This is a card component.</p>
+        </div>
+      </div>
     </div>
   )
 }
