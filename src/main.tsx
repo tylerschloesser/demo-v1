@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import invariant from 'tiny-invariant'
+import { App } from './app'
 import './index.css'
 
 async function main() {
@@ -9,8 +10,9 @@ async function main() {
 
   createRoot(container).render(
     <StrictMode>
-      <></>
+      <App />
     </StrictMode>,
   )
 }
+
 main()
