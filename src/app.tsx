@@ -1,27 +1,53 @@
 import clsx from 'clsx'
-import { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import invariant from 'tiny-invariant'
 
 export function App() {
   const cards = Array.from({ length: 100 }, (_, i) => i)
+
+  const scrollY = useRef(0)
+  const container = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    const { signal } = controller
+
+    document.addEventListener(
+      'wheel',
+      (ev) => {
+        ev.preventDefault()
+        scrollY.current = Math.max(
+          scrollY.current + ev.deltaY,
+          0,
+        )
+        invariant(container.current)
+        container.current.style.translate = `0 ${-scrollY.current}px`
+      },
+      { signal, passive: false },
+    )
+  }, [])
+
   return (
     <div>
-      <div className="sticky top-0 bg-gray-400">
+      <div ref={container}>
+        <div
+          className={clsx(
+            'flex flex-col',
+            'gap-4 p-4',
+            'md:gap-8 md:p-8',
+          )}
+        >
+          {cards.map((i) => (
+            <Card key={i} />
+          ))}
+        </div>
+      </div>
+      <div className="fixed top-0 left-0 right-0 bg-gray-400">
         <div className="p-1">
           <div className="font-mono text-xs font-bold tracking-wider">
             Doomscroller_v1
           </div>
         </div>
-      </div>
-      <div
-        className={clsx(
-          'flex flex-col',
-          'gap-4 p-4',
-          'md:gap-8 md:p-8',
-        )}
-      >
-        {cards.map((i) => (
-          <Card key={i} />
-        ))}
       </div>
       <Toast message="If you're ever feeling weird or uncomfortable, just keep scrolling!" />
     </div>
@@ -54,7 +80,7 @@ function Toast({ message }: ToastProps) {
   )
 }
 
-function Card() {
+const Card = React.memo(function Card() {
   const [state] = useState(() => {
     const { h, s, l } = (() => {
       const r = Math.random()
@@ -83,4 +109,4 @@ function Card() {
       />
     </div>
   )
-}
+})
